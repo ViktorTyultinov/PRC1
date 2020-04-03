@@ -15,19 +15,26 @@ int main(int argc, char **argv)
     char character;
     scanf("%c", &character);
 
-    char res[2];
-    Encode(character, res);
-    printf("%s\n", "Done");
-    WriteFromFile(startFile, "QJ MI HUQ BE OHLIOV");
+    char doubleBits[2];
+
+    Encode(character, doubleBits);
+    printf("%s\n", "Done encoding");
+    WriteFromFile(startFile, doubleBits);
+
+    char decoded = 0;
+
+    Decode(&decoded, doubleBits);
+    printf("%s\n", "Done decoding");
+    WriteFromFile(endFile, doubleBits);
 
     for (int i = 0; i < 8; i++)
     {
-        printf("%d", !!((res[0] << i) & 0x80));
+        printf("%d", !!((doubleBits[0] << i) & 0x80));
     }
     printf("\n");
     for (int i = 0; i < 8; i++)
     {
-        printf("%d", !!((res[1] << i) & 0x80));
+        printf("%d", !!((doubleBits[1] << i) & 0x80));
     }
     printf("\n");
 

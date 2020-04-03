@@ -88,15 +88,190 @@ int Encode(char byte, char *res)
 
 int SwapValue(char *byte)
 {
+    // int lbyte[8];
+    // for (int i = 7; i >= 0; --i)
+    // {
+    //     lbyte[i] = getSingleBit(byte, i);
+    // }
     return 0;
 }
 
-int Decode(char *byte)
+int PairityFix(char *byte)
 {
-    int lbyte[9];
+    int lbyte[8];
     for (int i = 7; i >= 0; --i)
     {
-        lbyte[i] = getSingleBit(byte, i);
+        lbyte[i] = getSingleBit(*byte, i);
     }
+
+    int sum1 = lbyte[3] + lbyte[4] + lbyte[5] + lbyte[2];
+    int sum2 = lbyte[4] + lbyte[5] + lbyte[6] + lbyte[1];
+    int sum3 = lbyte[5] + lbyte[6] + lbyte[3] + lbyte[0];
+
+    // 0 - false, 1-true
+    int sum1odd = (sum1 % 2 == 0);
+    int sum2odd = (sum2 % 2 == 0);
+    int sum3odd = (sum3 % 2 == 0);
+
+    if (sum1odd && sum2odd && sum3odd)
+    {
+        if (lbyte[5] == 1)
+        {
+            lbyte[5] = 0;
+        }
+        else
+        {
+            lbyte[5] = 1;
+        }
+    }
+    else if (sum1odd && sum2odd)
+    {
+        if (lbyte[4] == 1)
+        {
+            lbyte[4] = 0;
+        }
+        else
+        {
+            lbyte[4] = 1;
+        }
+    }
+    else if (sum2odd && sum3odd)
+    {
+        if (lbyte[6] == 1)
+        {
+            lbyte[6] = 0;
+        }
+        else
+        {
+            lbyte[6] = 1;
+        }
+    }
+    else if (sum1odd && sum3odd)
+    {
+        if (lbyte[3] == 1)
+        {
+            lbyte[3] = 0;
+        }
+        else
+        {
+            lbyte[3] = 1;
+        }
+    }
+    else if (sum1odd)
+    {
+        if (lbyte[2] == 1)
+        {
+            lbyte[2] = 0;
+        }
+        else
+        {
+            lbyte[2] = 1;
+        }
+    }
+    else if (sum2odd)
+    {
+        if (lbyte[1] == 1)
+        {
+            lbyte[1] = 0;
+        }
+        else
+        {
+            lbyte[1] = 1;
+        }
+    }
+    else if (sum3odd)
+    {
+        if (lbyte[0] == 1)
+        {
+            lbyte[0] = 0;
+        }
+        else
+        {
+            lbyte[0] = 1;
+        }
+    }
+
+    for (int i = 7; i >= 0; --i)
+    {
+        if (lbyte[i] == 1)
+        {
+            *byte |= 1UL << i;
+        }
+        else
+        {
+            *byte &= ~(1UL << i);
+        }
+    }
+    return 0;
+}
+
+int Decode(char *decoded, char encoded[])
+{
+    printf("Decode()\n");
+
+    printf("Decoding encoded[0]: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", !!((encoded[0] << i) & 0x80));
+    }
+    printf("\n");
+    printf("Decoding encoded[1]: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", !!((encoded[1] << i) & 0x80));
+    }
+    printf("\n");
+
+    char byte1 = (encoded[0] << 1) & mask1;
+    char byte2 = (encoded[1] >> 3) & mask2;
+
+    printf("Decoding byte1: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", !!((byte1 << i) & 0x80));
+    }
+    printf("\n");
+    printf("Decoding byte2: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", !!((byte2 << i) & 0x80));
+    }
+    printf("\n");
+
+    for (int i = 0; i < 4; i++)
+    {
+        int bitValue = getSingleBit(byte2, i);
+        if (bitValue)
+        {
+            *decoded |= 1UL << i;
+        }
+        else
+        {
+            *decoded &= ~(1UL << i);
+        }
+    }
+    printf("Processed byte1.\n");
+
+    for (int i = 5; i < 8; i++)
+    {
+        int bitValue = getSingleBit(byte1, i);
+        if (bitValue)
+        {
+            *decoded |= 1UL << i;
+        }
+        else
+        {
+            *decoded &= ~(1UL << i);
+        }
+    }
+    printf("Processed byte2.\n");
+
+    printf("Decoding byte: ");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("%d", !!((*decoded << i) & 0x80));
+    }
+    printf("\n");
+
     return 0;
 }
