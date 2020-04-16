@@ -10,7 +10,6 @@ int WriteFromFile(const char *fileName, char *string)
     if (filePtr == NULL)
     {
         printf("Could not open file.\n");
-        fclose(filePtr);
         return -1;
     }
 
@@ -32,7 +31,6 @@ int ReadFromFile(const char *fileName, char *string, int strSize)
     if (filePtr == NULL)
     {
         printf("Could not open file.\n");
-        fclose(filePtr);
         return -1;
     }
 

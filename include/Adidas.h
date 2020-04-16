@@ -2,8 +2,9 @@
 #define ADIDAS_H
 
 int Encode(char byte, char *res);
-int SwapValue(char* byte);
 int Decode(char* decoded, char encoded[]);
+int SwapValue(char* byte);
+int PairityFix(char *byte);
 
 
 #endif
