@@ -12,7 +12,9 @@ int main(int argc, char **argv)
     int k = 0;
     printf("Main has started \n");
 
-    char character;
+    char character; 
+    // uint8_t byte
+    // int res = fread (&byte, 1,1, fp);
     scanf("%c", &character);
 
     char doubleBits[2];
@@ -25,18 +27,7 @@ int main(int argc, char **argv)
 
     Decode(&decoded, doubleBits);
     printf("%s\n", "Done decoding");
-    WriteFromFile(endFile, doubleBits);
-
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%d", !!((doubleBits[0] << i) & 0x80));
-    }
-    printf("\n");
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%d", !!((doubleBits[1] << i) & 0x80));
-    }
-    printf("\n");
+    WriteFromFile(endFile, &decoded);
 
     scanf("%d", &k);
     return 0;
