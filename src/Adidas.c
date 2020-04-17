@@ -50,8 +50,11 @@ int Encode(char byte, char *res)
 
 int SwapValue(char *byte)
 {
+    printf("Initial byte: %s", byte);
     int randomNumber = (rand() % (7 - 0 + 1)) + 0;
+    printf("Initial byte: %d", randomNumber);
     *byte ^= 1UL << 2 - randomNumber;
+    printf("End byte: %s", byte);
     return 0;
 }
 
@@ -81,102 +84,32 @@ int Decode(char *decoded, char encoded[])
 
 int PairityFix(char *byte)
 {
-    int lbyte[8];
+    int bits[8];
     for (int i = 7; i >= 0; --i)
     {
-        lbyte[i] = getSingleBit(*byte, i);
+        bits[i] = getSingleBit(*byte, i);
     }
 
-    int sum1 = lbyte[3] + lbyte[4] + lbyte[5] + lbyte[2];
-    int sum2 = lbyte[4] + lbyte[5] + lbyte[6] + lbyte[1];
-    int sum3 = lbyte[5] + lbyte[6] + lbyte[3] + lbyte[0];
+    int sum1odd = bits[3]^bits[4]^bits[5]^bits[2];
+    int sum2odd = bits[4]^bits[5]^bits[6]^bits[1];
+    int sum3odd = bits[5]^bits[6]^bits[3]^bits[0];
 
-    // 0 - false, 1-true
-    int sum1odd = (sum1 % 2 == 0);
-    int sum2odd = (sum2 % 2 == 0);
-    int sum3odd = (sum3 % 2 == 0);
+    printf("Sum 1: %d", sum1odd);
+    printf("Sum 2: %d", sum2odd);
+    printf("Sum 3: %d", sum3odd);
 
     if (sum1odd && sum2odd && sum3odd)
-    {
-        if (lbyte[5] == 1)
-        {
-            lbyte[5] = 0;
-        }
-        else
-        {
-            lbyte[5] = 1;
-        }
-    }
+        bits[5] = (bits[5] != 1);
     else if (sum1odd && sum2odd)
-    {
-        if (lbyte[4] == 1)
-        {
-            lbyte[4] = 0;
-        }
-        else
-        {
-            lbyte[4] = 1;
-        }
-    }
+        bits[4] = (bits[4] != 1);
     else if (sum2odd && sum3odd)
-    {
-        if (lbyte[6] == 1)
-        {
-            lbyte[6] = 0;
-        }
-        else
-        {
-            lbyte[6] = 1;
-        }
-    }
+        bits[6] = (bits[6] != 1);
     else if (sum1odd && sum3odd)
-    {
-        if (lbyte[3] == 1)
-        {
-            lbyte[3] = 0;
-        }
-        else
-        {
-            lbyte[3] = 1;
-        }
-    }
-    else if (sum1odd)
-    {
-        if (lbyte[2] == 1)
-        {
-            lbyte[2] = 0;
-        }
-        else
-        {
-            lbyte[2] = 1;
-        }
-    }
-    else if (sum2odd)
-    {
-        if (lbyte[1] == 1)
-        {
-            lbyte[1] = 0;
-        }
-        else
-        {
-            lbyte[1] = 1;
-        }
-    }
-    else if (sum3odd)
-    {
-        if (lbyte[0] == 1)
-        {
-            lbyte[0] = 0;
-        }
-        else
-        {
-            lbyte[0] = 1;
-        }
-    }
+        bits[3] = (bits[3] != 1);
 
     for (int i = 7; i >= 0; --i)
     {
-        if (lbyte[i] == 1)
+        if (bits[i] == 1)
         {
             *byte |= 1UL << i;
         }
