@@ -50,11 +50,9 @@ int Encode(char byte, char *res)
 
 int SwapValue(char *byte)
 {
-    printf("Initial byte: %s", byte);
     int randomNumber = (rand() % (7 - 0 + 1)) + 0;
-    printf("Initial byte: %d", randomNumber);
-    *byte ^= 1UL << 2 - randomNumber;
-    printf("End byte: %s", byte);
+    *byte ^= 1UL << randomNumber;
+
     return 0;
 }
 
@@ -84,6 +82,7 @@ int Decode(char *decoded, char encoded[])
 
 int PairityFix(char *byte)
 {
+    printf("initial bit: %x\n", *byte);
     int bits[8];
     for (int i = 7; i >= 0; --i)
     {
@@ -94,9 +93,13 @@ int PairityFix(char *byte)
     int sum2odd = bits[4]^bits[5]^bits[6]^bits[1];
     int sum3odd = bits[5]^bits[6]^bits[3]^bits[0];
 
-    printf("Sum 1: %d", sum1odd);
-    printf("Sum 2: %d", sum2odd);
-    printf("Sum 3: %d", sum3odd);
+    // printf("Start fix\n");
+
+    // printf("Sum 1: %d\n", sum1odd);
+    // printf("Sum 2: %d\n", sum2odd);
+    // printf("Sum 3: %d\n", sum3odd);
+    // printf("End fix\n");
+
 
     if (sum1odd && sum2odd && sum3odd)
         bits[5] = (bits[5] != 1);
@@ -118,4 +121,5 @@ int PairityFix(char *byte)
             *byte &= ~(1UL << i);
         }
     }
+    printf("final bit: %x\n", *byte);
 }
